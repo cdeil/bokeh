@@ -9,7 +9,7 @@ for the label values.
 '''
 from numpy import arange, linspace, pi, sin
 
-from bokeh.models import LinearAxis, Range1d
+from bokeh.models import LinearAxis, Range1d, ZoomInTool, ZoomOutTool
 from bokeh.palettes import Sunset6
 from bokeh.plotting import figure, show
 
@@ -22,15 +22,32 @@ blue, red = Sunset6[2], Sunset6[5]
 p = figure(x_range=(-2*pi, 2*pi), y_range=(-1, 1))
 p.background_fill_color = "#fafafa"
 
-p.scatter(x, y, line_color="black", fill_color=blue, size=12)
-p.yaxis.axis_label = "light blue circles"
-p.yaxis.axis_label_text_color = blue
+blue_circles = p.scatter(x, y, line_color="black", fill_color=blue, size=12)
+p.axis.axis_label = "light blue circles"
+p.axis.axis_label_text_color = blue
 
 p.extra_y_ranges['foo'] = Range1d(0, 100)
-p.scatter(x, y2, color=red, size=8, y_range_name="foo")
+red_circles = p.scatter(x, y2, color=red, size=8,
+    #x_range_name="foo",
+    y_range_name="foo")
 
-ax2 = LinearAxis(y_range_name="foo", axis_label="red circles")
+ax2 = LinearAxis(
+    #x_range_name="foo",
+    y_range_name="foo", axis_label="red circles")
 ax2.axis_label_text_color = red
 p.add_layout(ax2, 'left')
+
+ax3 = LinearAxis(
+    #x_range_name="foo",
+    y_range_name="foo", axis_label="red circles")
+ax3.axis_label_text_color = red
+p.add_layout(ax3, 'below')
+
+zoom_in0 = ZoomInTool(renderers=[blue_circles], description="Zoom in blue circles")
+zoom_out0 = ZoomOutTool(renderers=[blue_circles], description="Zoom out blue circles")
+zoom_in1 = ZoomInTool(renderers=[red_circles], description="Zoom in red circles")
+zoom_out1 = ZoomOutTool(renderers=[red_circles], description="Zoom out red circles")
+p.add_tools(zoom_in0, zoom_out0)
+p.add_tools(zoom_in1, zoom_out1)
 
 show(p)
